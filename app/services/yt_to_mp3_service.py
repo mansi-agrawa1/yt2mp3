@@ -13,6 +13,10 @@ class YTMP3Service(IYTMP3Service):
 
     def convert_video(self, video_url: str) -> str:
         # Implementation for converting YouTube video to MP3
+        
+        if not self._check_url(video_url):
+            raise ValueError("Invalid YouTube URL")
+        
         output_template = os.path.join(self.AUDIO_DIR, '%(title)s.%(ext)s')
         ytdlp_options = self._get_base_options(output_template)
         try:
@@ -65,4 +69,8 @@ class YTMP3Service(IYTMP3Service):
             logger.info(f"Done downloading, now converting ...")
         else:
             logger.info(f"Downloading: {d.get('_percent_str')} of {d.get('_total_bytes_str')} at {d.get('_speed_str')} ETA {d.get('_eta_str')}")
+
+    def _check_url(self, url: str) -> bool:
+        # Basic URL validation
+        return "youtube.com" in url or "youtu.be" in url
         
